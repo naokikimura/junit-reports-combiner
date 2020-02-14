@@ -1,0 +1,37 @@
+{
+  "name": "junit-reports-combiner",
+  "version": "0.0.0",
+  "description": "Combine JUnit XML reports from two.",
+  "scripts": {
+    "test": "gulp test",
+    "prepare": "gulp build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naokikimura/junit-reports-combiner.git"
+  },
+  "keywords": [
+    "junit",
+    "xml"
+  ],
+  "author": "Naoki Kimura",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naokikimura/junit-reports-combiner/issues"
+  },
+  "homepage": "https://github.com/naokikimura/junit-reports-combiner#readme",
+  "devDependencies": {
+    "@types/chai": "^4.2.8",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.7.0",
+    "@typescript-eslint/eslint-plugin": "^2.19.0",
+    "@typescript-eslint/parser": "^2.19.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "gulp": "^4.0.2",
+    "mocha": "^7.0.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {}
+}
