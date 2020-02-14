@@ -1,0 +1,66 @@
+.TH JUNIT-REPORTS-COMBINER 1 2020-02-14
+
+.SH NAME
+junit-reports-combiner \- Combine JUnit XML reports from two and more
+
+.SH SYNOPSIS
+.B junit-reports-combiner
+[\fB\-\-operator=\fR{\fBunion\fR|\fBintersect\fR|\fBexcept\fR}]
+[\fB\-\-all\fR]
+[\fB\-\-test-suite-key=\fItest-suite-key\fR]
+[\fB\-\-test-case-key=\fItest-case-key\fR]
+[\fB\-\-test-result-key=\fItest-result-key\fR]
+[\fB\-\-namespace=\fIname\fB=\fIuri\fR \fI...\fR]
+.I file
+[\fI...\fR]
+
+.SH DESCRIPTION
+The reports of two and more can be combined using the set operations union, intersection, and difference.
+The command reads files sequentially, writing them to the standard output.
+The file operands are processed in command-line order.
+If there are fewer than two file operands, this command reads from the standard input.
+.SS UNION
+The UNION operation combines the results of two reports into a single result that comprises the elements that are returned by both reports.
+.SS INTERSECT
+The INTERSECT operation combines the reports of two into a single result that comprises all the elements common to both reports.
+.SS EXCEPT
+The EXCEPT operation finds the difference between the two reports and the result comprises the element that belong only to the first report.
+
+.SH OPTIONS
+.PP
+.PD 0
+.TP
+.B \-\-operator=union
+.PD 0
+.TP 
+.B \-\-operator=intersect
+.PD 0
+.TP
+.B \-\-operator=except
+Specify an operator. Default is \fBunion\fR.
+.TP
+.B \-\-all
+Duplicate elements are eliminated unless \fB\-\-all\fR is used.
+.TP
+\fB\-\-test-suite-key=\fItest-suite-key\fR
+Specify an XPath expression that uniquely identifies the \fB<testsuite>\fR element. Default is \fBstring(@name)\fR.
+.TP
+\fB\-\-test-case-key=\fItest-suite-key\fR
+Specify an XPath expression that uniquely identifies the \fB<testcase>\fR element. Default is \fBconcat(@classname,"#",@name)\fR.
+.TP
+\fB\-\-test-result-key=\fItest-suite-key\fR
+Specify an XPath expression that uniquely identifies the \fB<failure>\fR element or \fB<error>\fR element. Default is \fBstring(.)\fR.
+
+.SH EXAMPLES
+Combines two reports:
+.nf
+
+    junit-reports-combiner TEST-example.FooTest.xml TEST-example.BarTest.xml
+
+.fi
+Shows the differences between the two reports:
+.nf
+
+    junit-reports-combiner --operator=except TEST-example.FooTest-1.xml TEST-example.FooTest-2.xml
+
+.fi

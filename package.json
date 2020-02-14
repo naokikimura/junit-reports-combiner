@@ -1,7 +1,9 @@
 {
   "name": "junit-reports-combiner",
   "version": "0.0.0",
-  "description": "Combine JUnit XML reports from two.",
+  "description": "Combine JUnit XML reports from two and more.",
+  "bin": "dist/cli.js",
+  "man": "man/doc.1",
   "scripts": {
     "test": "gulp test",
     "prepare": "gulp build"
@@ -12,7 +14,8 @@
   },
   "keywords": [
     "junit",
-    "xml"
+    "xml",
+    "cli"
   ],
   "author": "Naoki Kimura",
   "license": "MIT",
@@ -33,5 +36,9 @@
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@types/xmldom": "^0.1.29",
+    "xmldom": "^0.2.1",
+    "xpath": "0.0.27"
+  }
 }
