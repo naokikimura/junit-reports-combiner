@@ -79,7 +79,7 @@ jobs:
 
       - deploy:
           command: |
-              echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> "${CIRCLE_WORKING_DIRECTORY}/.npmrc"
+              echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" >> `sh -c "echo ${CIRCLE_WORKING_DIRECTORY}"`/.npmrc
               npm publish
 
 workflows:
