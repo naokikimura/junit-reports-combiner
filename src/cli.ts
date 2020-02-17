@@ -40,15 +40,12 @@ const Operator = (argv.get('operator') || [])
   })
   .reduce((_, operator) => operator, Union);
 
-const distinct = !(((values: string[] | undefined): boolean | undefined => {
-  if (values === undefined) return undefined;
-  if (values[0] === undefined) return true;
-  return Boolean(values[0]);
-})(argv.get('all')) || false);
+const distinct = !(((values: string[] | undefined): boolean | undefined => values && values[0] !== 'false')(argv.get('all')) || false);
 
 debug(util.inspect({ Operator, distinct, namespaces, treeStructure }));
-const operator = new Operator(true, { namespaces, treeStructure });
-const files = ((files: (string | number)[]): (string | number)[] => files.length > 1 ? files : files.concat(0))(argv.get('--') || []);
+const operator = new Operator(distinct, { namespaces, treeStructure });
+const files = ((files): (string | number)[] =>
+  files.length > 1 ? files : Array<string | number>().concat(0, ...files))(argv.get('--') || []);
 const first = files[0];
 const others = files.slice(1);
 debug(util.inspect({ first, others }));
@@ -56,17 +53,18 @@ debug(util.inspect({ first, others }));
 others
   .reduce<Promise<Document>>(async (previous: Promise<Document>, file: string | number): Promise<Document> => {
     debug(file.toString());
-    const document = ((rootNodeName: string, namespaces: { [name: string]: string }): Document => {
-      const document = new DOMImplementation().createDocument(null, null, null);
-      document.appendChild(document.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"'));
-      const root = document.createElement(rootNodeName);
-      for (const [key, value] of Object.entries(namespaces)) root.setAttribute(`xmlns:${key}`, value);
-      document.appendChild(root);
-      return document
-    })('testsuites', namespaces);
-    const curent = await new DOMLoader().load(file);
-    operator.operation(await previous, curent, document.documentElement);
-    return document;
+    return Promise.all([await previous, await new DOMLoader().load(file)]).then(([left, right]) => {
+      const document = ((rootNodeName: string, namespaces: { [name: string]: string }): Document => {
+        const document = new DOMImplementation().createDocument(null, null, null);
+        document.appendChild(document.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"'));
+        const root = document.createElement(rootNodeName);
+        for (const [key, value] of Object.entries(namespaces)) root.setAttribute(`xmlns:${key}`, value);
+        document.appendChild(root);
+        return document
+      })('testsuites', namespaces);
+      operator.operation(left, right, document.documentElement);
+      return document;
+    });
   }, new DOMLoader().load(first))
   .then(document => {
     const select = xpath.useNamespaces(namespaces);
