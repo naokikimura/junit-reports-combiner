@@ -18,6 +18,12 @@ The reports of two and more can be combined using the set operations union, inte
 npm i -g junit-reports-combiner
 ```
 
+### Modules
+
+```sh
+npm i junit-reports-combiner
+```
+
 ## Usage
 
 ### CLI
@@ -29,6 +35,34 @@ junit-reports-combiner TEST-example.FooTest.xml TEST-example.BarTest.xml
 ```
 
 See the `man junit-reports-combiner` for details.
+
+### Modules
+
+```javascript
+import { DOMParser } from 'xmldom';
+import JUnitReportsCombiner from 'junit-reports-combiner';
+
+const parser = new DOMParser();
+
+const xml1 = `
+  <testsuite tests="1" failures="0" name="example.FooTest" time="0.001" errors="0" skipped="0">
+    <testcase classname="example.FooTest" name="testFoo" time="0.001"/>
+  </testsuite>
+`;
+const doc1 = parser.parseFromString(xml1, 'application/xml');
+
+const xml2 = `
+  <testsuite tests="1" failures="1" name="example.BarTest" time="0.001" errors="0" skipped="0">
+    <testcase classname="example.BarTest" name="testBar" time="0.001">
+      <failure type="java.lang.AssertionError">java.lang.AssertionError</failure>
+    </testcase>
+  </testsuite>
+`;
+const doc2 = parser.parseFromString(xml2, 'application/xml');
+
+const combiner = new JUnitReportsCombiner();
+const doc3 = combiner.combine(doc1, doc2);
+```
 
 ## Contributing
 Bug reports and pull requests are welcome on GitHub at https://github.com/naokikimura/junit-reports-combiner

@@ -2,8 +2,9 @@
   "name": "junit-reports-combiner",
   "version": "0.0.2",
   "description": "Combine JUnit XML reports from two and more.",
-  "bin": "dist/cli.js",
+  "bin": "dist/index.js",
   "man": "man/man1/junit-reports-combiner.1",
+  "main": "dist/main.js",
   "scripts": {
     "test": "gulp test",
     "prepare": "gulp build"
