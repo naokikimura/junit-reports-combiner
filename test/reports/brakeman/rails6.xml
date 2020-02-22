@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites xmlns:brakeman="https://brakemanscanner.org/">
+  <brakeman:properties xml:id="scan_info">
+    <brakeman:property brakeman:name="app_path" brakeman:value="~/Documents/workspace/brakeman/test/apps/rails6"/>
+    <brakeman:property brakeman:name="rails_version" brakeman:value="6.0.0.beta2"/>
+    <brakeman:property brakeman:name="security_warnings" brakeman:value="13"/>
+    <brakeman:property brakeman:name="start_time" brakeman:value="2020-02-09T11:50:35+09:00"/>
+    <brakeman:property brakeman:name="end_time" brakeman:value="2020-02-09T11:50:35+09:00"/>
+    <brakeman:property brakeman:name="duration" brakeman:value="0.14458"/>
+    <brakeman:property brakeman:name="checks_performed" brakeman:value="BasicAuth,BasicAuthTimingAttack,CrossSiteScripting,ContentTag,CookieSerialization,CreateWith,DefaultRoutes,Deserialize,DetailedExceptions,DigestDoS,DynamicFinders,EscapeFunction,Evaluation,Execute,FileAccess,FileDisclosure,FilterSkipping,ForgerySetting,HeaderDoS,I18nXSS,JRubyXML,JSONEncoding,JSONParsing,LinkTo,LinkToHref,MailTo,MassAssignment,MimeTypeDoS,ModelAttrAccessible,ModelAttributes,ModelSerialize,NestedAttributes,NestedAttributesBypass,NumberToCurrency,PermitAttributes,QuoteTableName,Redirect,RegexDoS,Render,RenderDoS,RenderInline,ResponseSplitting,RouteDoS,SafeBufferManipulation,SanitizeMethods,SelectTag,SelectVulnerability,Send,SendFile,SessionManipulation,SessionSettings,SimpleFormat,SingleQuotes,SkipBeforeFilter,SprocketsPathTraversal,SQL,SQLCVEs,SSLVerify,StripTags,SymbolDoSCVE,TranslateBug,UnsafeReflection,ValidationRegex,WithoutProtection,XMLDoS,YAMLParsing"/>
+    <brakeman:property brakeman:name="number_of_controllers" brakeman:value="3"/>
+    <brakeman:property brakeman:name="number_of_models" brakeman:value="3"/>
+    <brakeman:property brakeman:name="ruby_version" brakeman:value="7"/>
+    <brakeman:property brakeman:name="number_of_templates" brakeman:value="2.3.8"/>
+    <brakeman:property brakeman:name="brakeman_version" brakeman:value="4.7.2"/>
+  </brakeman:properties>
+  <brakeman:errors/>
+  <brakeman:obsolete/>
+  <brakeman:ignored/>
+  <testsuite errors="0" failures="1" hostname="localhost" id="1" name="config/initializers/cookies_serializer.rb" package="brakeman" tests="66" time="0" timestamp="2020-02-09T11:50:35">
+    <properties/>
+    <testcase classname="Brakeman::CheckCookieSerialization" name="run_check" time="0">
+      <failure brakeman:code="Rails.application.config.action_dispatch.cookies_serializer = :marshal" brakeman:confidence="Medium" brakeman:file="config/initializers/cookies_serializer.rb" brakeman:fingerprint="d882f63ce96c28fb6c6e0982f2a171460e4b933bfd9b9a5421dca21eef3f76da" brakeman:line="5" message="Use of unsafe cookie serialization strategy `:marshal` might lead to remote code execution" type="Remote Code Execution">(Medium) Remote Code Execution - Use of unsafe cookie serialization strategy `:marshal` might lead to remote code execution near line 5 in config/initializers/cookies_serializer.rb: Rails.application.config.action_dispatch.cookies_serializer = :marshal</failure>
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+  <testsuite errors="0" failures="7" hostname="localhost" id="2" name="app/controllers/users_controller.rb" package="brakeman" tests="66" time="0" timestamp="2020-02-09T11:50:35">
+    <properties/>
+    <testcase classname="Brakeman::CheckExecute" name="run_check" time="0">
+      <failure brakeman:code="system(&quot;bash&quot;, &quot;-c&quot;, params[:script])" brakeman:confidence="High" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="22f0226c43eeb59bff49e4f0ea10014c2882c8be2f51e4d36876a26960b100d9" brakeman:line="70" message="Possible command injection" type="Command Injection">(High) Command Injection - Possible command injection near line 70 in app/controllers/users_controller.rb: system("bash", "-c", params[:script])</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckExecute" name="run_check" time="0">
+      <failure brakeman:code="exec(&quot;zsh&quot;, &quot;-c&quot;, &quot;#{params[:script]} -e ./&quot;)" brakeman:confidence="High" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="d5b5eeed916c878c897bcde8b922bb18cdcf9fc1acfb8e37b30eb02422e8c43e" brakeman:line="75" message="Possible command injection" type="Command Injection">(High) Command Injection - Possible command injection near line 75 in app/controllers/users_controller.rb: exec("zsh", "-c", "#{params[:script]} -e ./")</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckMassAssignment" name="run_check" time="0">
+      <failure brakeman:code="params.permit!" brakeman:confidence="Medium" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="58e42d4ef79c278374a8456b1c034c7768e28b9a156e5602bb99a1105349f350" brakeman:line="93" message="Parameters should be whitelisted for mass assignment" type="Mass Assignment">(Medium) Mass Assignment - Parameters should be whitelisted for mass assignment near line 93 in app/controllers/users_controller.rb: params.permit!</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckMassAssignment" name="run_check" time="0">
+      <failure brakeman:code="params.permit!" brakeman:confidence="Medium" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="58e42d4ef79c278374a8456b1c034c7768e28b9a156e5602bb99a1105349f350" brakeman:line="94" message="Parameters should be whitelisted for mass assignment" type="Mass Assignment">(Medium) Mass Assignment - Parameters should be whitelisted for mass assignment near line 94 in app/controllers/users_controller.rb: params.permit!</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckRedirect" name="run_check" time="0">
+      <failure brakeman:code="redirect_to(request.params)" brakeman:confidence="High" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="1d18e872e5f74ff0fd445008fd00ea2f04d5b3086f18682e301621779cd609a2" brakeman:line="88" message="Possible unprotected redirect" type="Redirect">(High) Redirect - Possible unprotected redirect near line 88 in app/controllers/users_controller.rb: redirect_to(request.params)</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckSQL" name="run_check" time="0">
+      <failure brakeman:code="@user.delete_by(params[:user])" brakeman:confidence="Medium" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="02ad62a4e0cc17d972701be99e1d1ba4761b9176acc36e41498eac3a8d853a8a" brakeman:line="66" message="Possible SQL injection" type="SQL Injection">(Medium) SQL Injection - Possible SQL injection near line 66 in app/controllers/users_controller.rb: @user.delete_by(params[:user])</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckSQL" name="run_check" time="0">
+      <failure brakeman:code="@user.destroy_by(params[:user])" brakeman:confidence="Medium" brakeman:file="app/controllers/users_controller.rb" brakeman:fingerprint="5049d89b5d867ce8c2e602746575b512f147b0ff4eca18ac1b2a3a308204180e" brakeman:line="65" message="Possible SQL injection" type="SQL Injection">(Medium) SQL Injection - Possible SQL injection near line 65 in app/controllers/users_controller.rb: @user.destroy_by(params[:user])</failure>
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="localhost" id="3" name="app/models/user.rb" package="brakeman" tests="66" time="0" timestamp="2020-02-09T11:50:35">
+    <properties/>
+    <testcase classname="Brakeman::CheckSQL" name="run_check" time="0">
+      <failure brakeman:code="where(&quot;      name = '#{name}'\n&quot;.strip_heredoc)" brakeman:confidence="Medium" brakeman:file="app/models/user.rb" brakeman:fingerprint="c567289064ac39d277b33a5b860641b79a8139cf85a9a079bc7bb36130784a93" brakeman:line="11" message="Possible SQL injection" type="SQL Injection">(Medium) SQL Injection - Possible SQL injection near line 11 in app/models/user.rb: where("      name = '#{name}'\n".strip_heredoc)</failure>
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+  <testsuite errors="0" failures="4" hostname="localhost" id="4" name="app/views/users/show.html.erb" package="brakeman" tests="66" time="0" timestamp="2020-02-09T11:50:35">
+    <properties/>
+    <testcase classname="Brakeman::CheckCrossSiteScripting" name="run_check" time="0">
+      <failure brakeman:code="User.new(user_params).name" brakeman:confidence="High" brakeman:file="app/views/users/show.html.erb" brakeman:fingerprint="9e949d88329883f879b7ff46bdb096ba43e791aacb6558f47beddc34b9d42c4c" brakeman:line="5" message="Unescaped model attribute" type="Cross-Site Scripting">(High) Cross-Site Scripting - Unescaped model attribute near line 5 in app/views/users/show.html.erb: User.new(user_params).name</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckCrossSiteScripting" name="run_check" time="0">
+      <failure brakeman:code="User.new(user_params).name" brakeman:confidence="High" brakeman:file="app/views/users/show.html.erb" brakeman:fingerprint="9e949d88329883f879b7ff46bdb096ba43e791aacb6558f47beddc34b9d42c4c" brakeman:line="6" message="Unescaped model attribute" type="Cross-Site Scripting">(High) Cross-Site Scripting - Unescaped model attribute near line 6 in app/views/users/show.html.erb: User.new(user_params).name</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckCrossSiteScripting" name="run_check" time="0">
+      <failure brakeman:code="User.new(user_params).name" brakeman:confidence="High" brakeman:file="app/views/users/show.html.erb" brakeman:fingerprint="9e949d88329883f879b7ff46bdb096ba43e791aacb6558f47beddc34b9d42c4c" brakeman:line="7" message="Unescaped model attribute" type="Cross-Site Scripting">(High) Cross-Site Scripting - Unescaped model attribute near line 7 in app/views/users/show.html.erb: User.new(user_params).name</failure>
+    </testcase>
+    <testcase classname="Brakeman::CheckCrossSiteScripting" name="run_check" time="0">
+      <failure brakeman:code="User.new(user_params).name" brakeman:confidence="High" brakeman:file="app/views/users/show.html.erb" brakeman:fingerprint="9e949d88329883f879b7ff46bdb096ba43e791aacb6558f47beddc34b9d42c4c" brakeman:line="8" message="Unescaped model attribute" type="Cross-Site Scripting">(High) Cross-Site Scripting - Unescaped model attribute near line 8 in app/views/users/show.html.erb: User.new(user_params).name</failure>
+    </testcase>
+    <system-out/>
+    <system-err/>
+  </testsuite>
+</testsuites>
