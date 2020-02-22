@@ -3,12 +3,12 @@ import xpath from 'xpath';
 
 const debug = util.debuglog('junit-reports-combiner');
 
-interface OperatorOptions {
+export interface OperatorOptions {
   namespaces?: { [name: string]: string };
   treeStructure?: [string, string][];
 }
 
-abstract class Operator {
+export abstract class Operator {
   protected readonly namespaces: { [name: string]: string };
   protected readonly treeStructure: [string, string][];
   protected readonly select: xpath.XPathSelect;

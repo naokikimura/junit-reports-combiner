@@ -1,6 +1,6 @@
 # junit-reports-combiner
 
-[![npm version](https://badge.fury.io/js/junit-reports-combiner.svg)](https://badge.fury.io/js/junit-reports-combiner) [![CircleCI](https://circleci.com/gh/naokikimura/junit-reports-combiner.svg?style=svg)](https://circleci.com/gh/naokikimura/junit-reports-combiner) [![Known Vulnerabilities](https://snyk.io/test/github/naokikimura/junit-reports-combiner/badge.svg?targetFile=package.json)](https://snyk.io/test/github/naokikimura/junit-reports-combiner?targetFile=package.json)
+[![npm version](https://badge.fury.io/js/junit-reports-combiner.svg)](https://badge.fury.io/js/junit-reports-combiner) [![CircleCI](https://circleci.com/gh/naokikimura/junit-reports-combiner.svg?style=svg)](https://circleci.com/gh/naokikimura/junit-reports-combiner) [![codecov](https://codecov.io/gh/naokikimura/junit-reports-combiner/branch/master/graph/badge.svg)](https://codecov.io/gh/naokikimura/junit-reports-combiner) [![Known Vulnerabilities](https://snyk.io/test/github/naokikimura/junit-reports-combiner/badge.svg?targetFile=package.json)](https://snyk.io/test/github/naokikimura/junit-reports-combiner?targetFile=package.json)
 
 Combine JUnit XML reports from two and more.
 

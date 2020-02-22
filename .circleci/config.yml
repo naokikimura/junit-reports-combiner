@@ -51,7 +51,11 @@ jobs:
     - restore_node_modules
 
     # run tests!
-    - run: npm test
+    - run: npx nyc npm test
+
+    - run:
+        command: npx nyc report --reporter=text-lcov | npx codecov --pipe
+        when: always
 
     - store_test_results:
         path: ./reports
