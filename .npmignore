@@ -112,3 +112,4 @@ test/
 tsconfig.json
 
 /reports/
+/.vscode/
