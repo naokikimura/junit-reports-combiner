@@ -1,6 +1,6 @@
 {
   "name": "junit-reports-combiner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Combine JUnit XML reports from two and more.",
   "bin": "dist/index.js",
   "man": "man/man1/junit-reports-combiner.1",
