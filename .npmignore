@@ -104,6 +104,7 @@ dist
 .tern-port
 
 .circleci/
+.codecov.yml
 .eslintignore
 .eslintrc.js
 .mocharc.js
