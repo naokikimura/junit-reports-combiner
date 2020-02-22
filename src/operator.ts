@@ -22,52 +22,84 @@ export abstract class Operator {
   protected abstract needToRetain(oneContains: boolean, otherContains: boolean): boolean;
   protected abstract needToMergeOther(): boolean;
 
-  operation(node1: Node, node2: Node, sink: Node): Node {
+  operation(leftNode: Node, rightNode: Node, sink: Node): Node {
     type HashTree = Map<string, [Node, HashTree][]>;
+    const structureMap = ([elementSelector, keySelector]: [string, string], node: Node, shouldMix: boolean): Map<string, Node[]> => {
+      return this.select<Node>(elementSelector, node)
+        .map((element): [string, Node] => [this.select<string>(keySelector, element, true), element])
+        .reduce((map, [key, value]) => {
+          if (this.distinct)
+            return map.set(key, [
+              (map.get(key) || []).concat(value.cloneNode(true)).reduce((previous, current) => {
+                if (shouldMix) for (let i = 0; i < previous.childNodes.length; i++) current.appendChild(previous.childNodes[i]);
+                return current;
+              })
+            ]);
+          else
+            return map.set(key, (map.get(key) || []).concat(value));
+        }, new Map<string, Node[]>());
+    };
     const structureHashTree = (node: Node, treeStructure: [string, string][]): HashTree => {
       if (treeStructure.length === 0) return new Map();
-      const [elementSelector, keySelector] = treeStructure[0];
-      const entries = this.select<Node>(elementSelector, node)
-        .map(element => [
-          this.select<string>(keySelector, element, true),
-          [element, structureHashTree(element, treeStructure.slice(1))]
-        ] as [string, [Node, HashTree]]);
-      return entries.reduce((map, [key, value]) => map.set(key, (map.get(key) || []).concat([value])), new Map<string, [Node, HashTree][]>());
+      const hashTree = new Map<string, [Node, HashTree][]>();
+      for (const [key, values] of structureMap(treeStructure[0], node, treeStructure.length - 1 > 0))
+        hashTree.set(key, values.map(element => [element, structureHashTree(element, treeStructure.slice(1))]));
+      return hashTree;
     };
-
-    const confront = (source: Node, tree: HashTree, sink: Node, treeStructure: [string, string][]): void => {
+    const confront = (source: Node, tree: HashTree, sink: Node, treeStructure: [string, string][]): boolean => {
       if (treeStructure.length === 0) {
-        if (this.needToRetain(true, true)) {
-          Array.from(source.childNodes).forEach(node => sink.appendChild(node.cloneNode(true)));
-        } else {
-          sink.parentNode?.removeChild(sink);
-        }
-        return;
+        for (let i = 0; i < source.childNodes.length; i++) sink.appendChild(source.childNodes[i].cloneNode(true));
+        return true;
       }
-      const [elementSelector, keySelector] = treeStructure[0];
-      const elements = this.select<Node>(elementSelector, source);
-      const keys = elements.map(element => {
-        const key = this.select<string>(keySelector, element, true);
-        const entrires = tree.get(key) || [];
-        const matches = entrires.length > 0;
-        if (matches) {
-          const clone = element.cloneNode(false);
-          sink.appendChild(clone);
-          entrires.forEach(([, map]) => confront(element, map, clone, treeStructure.slice(1)));
-        } else if (this.needToRetain(true, false)) {
-          const clone = element.cloneNode(true);
-          sink.appendChild(clone);
+      const appendRemainingNodes = (sink: Node, [node, tree]: [Node, HashTree], treeStructure: [string, string][]): number => {
+        if (tree.entries.length === 0 && treeStructure.length === 0) {
+          sink.appendChild(node.cloneNode(true));
+          return 1;
         }
-        return matches ? key : null;
-      }).filter((key): key is string => key !== null);
-      if (this.needToMergeOther())
+        const clone = node.cloneNode(false);
+        let count = 0;
+        tree.forEach((values) => {
+          for (const value of values) count += appendRemainingNodes(clone, value, treeStructure.slice(1))
+        });
+        if (!this.distinct || count > 0) sink.appendChild(clone);
+        return count;
+      }
+      const resultMap = new Map<string, { matches: boolean; founds: Set<[Node, HashTree] | undefined> }>();
+      structureMap(treeStructure[0], source, treeStructure.length - 1 > 0).forEach((elements, key) => {
+        const entries = tree.get(key) || [];
+        const matches = entries.length > 0;
+        const founds = new Set<[Node, HashTree] | undefined>();
+        if (matches || this.needToRetain(true, false)) {
+          for (const element of elements) {
+            const clone = element.cloneNode(!matches || entries.length === 0);
+            const foundIndex = entries.findIndex(([, tree]) => confront(element, tree, clone, treeStructure.slice(1)));
+            const found = foundIndex > -1;
+            const foundEntry = entries[foundIndex];
+            if (!this.distinct && this.needToMergeOther() && foundEntry) appendRemainingNodes(sink, foundEntry, treeStructure.slice(1));
+            if (this.needToRetain(true, found)) sink.appendChild(clone);
+            if (found) entries.splice(foundIndex, 1);
+            founds.add(foundEntry);
+          }
+        }
+        resultMap.set(key, { matches, founds });
+      });
+      if (this.needToMergeOther()) {
         for (const [key, values] of tree) {
-          if (keys.includes(key)) continue;
-          for (const [node] of values) sink.appendChild(node.cloneNode(true));
+          const { matches = false, founds = new Set<[Node, HashTree] | undefined>() } = resultMap.get(key) || {};
+          if (matches) {
+            values.forEach((value) => {
+              if (founds.has(value)) return;
+              appendRemainingNodes(sink, value, treeStructure.slice(1));
+            });
+          } else for (const [node] of values) sink.appendChild(node.cloneNode(true));
         }
+        tree.clear();
+      }
+      for (const { matches, founds } of resultMap.values())
+        if (!matches || founds.has(undefined)) return false;
+      return true;
     };
-    confront(node2, structureHashTree(node1, this.treeStructure), sink, this.treeStructure);
-
+    confront(leftNode, structureHashTree(rightNode, this.treeStructure), sink, this.treeStructure);
     return sink;
   }
 }
