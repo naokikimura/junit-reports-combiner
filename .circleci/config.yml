@@ -41,8 +41,10 @@ orbs:
     jobs:
       execute:
         description: Calculate the difference of ESLint results between HEAD branch and BASE branch
-        executor: default
         parameters:
+          executor:
+            type: executor
+            default: default
           analysis-prepare:
             description: Specify the required steps before eslint if necessary
             type: steps
@@ -56,6 +58,7 @@ orbs:
             description: Specify the value of the path parameter in the store_test_results step if you need to change it
             type: string
             default: "/tmp/test-results"
+        executor: << parameters.executor >>
         steps:
           - execute:
               analysis-prepare: << parameters.analysis-prepare >>
@@ -150,6 +153,7 @@ workflows:
         - setup
     - dscar-eslint/execute:
         name: lint
+        executor: default
         analysis-prepare:
           - restore_node_modules
         filters:
