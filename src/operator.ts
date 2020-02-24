@@ -1,8 +1,6 @@
 import util from 'util';
 import xpath from 'xpath';
 
-const debug = util.debuglog('junit-reports-combiner');
-
 export interface OperatorOptions {
   namespaces?: { [name: string]: string };
   treeStructure?: [string, string][];
