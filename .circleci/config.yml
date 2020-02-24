@@ -4,6 +4,64 @@
 #
 version: 2.1
 
+orbs:
+  dscar-eslint:
+    description: Delta ESLint Reports
+    orbs:
+      dscar: naokikimura/dscar@dev:0.0.0
+    executors:
+      default:
+        description: Use a CircleCI convenience image to analyze code statically
+        docker:
+        - image: circleci/node:lts
+    commands:
+      execute:
+        parameters:
+          analysis-prepare:
+            description: Specify the required steps before eslint if necessary
+            type: steps
+            default:
+              - run: npm install --global eslint
+          analysis-arguments:
+            description: Arguments of eslint command
+            type: string
+            default: --ext '.js,.jsx,.ts,.tsx' .
+          test-results-path:
+            description: Specify the value of the path parameter in the store_test_results step if you need to change it
+            type: string
+            default: "/tmp/test-results"
+        steps:
+          - dscar/execute:
+              analysis-name: ESLint
+              analysis-command: npx eslint
+              analysis-prepare: << parameters.analysis-prepare >>
+              analysis-arguments: << parameters.analysis-arguments >> -f junit
+              calculate-options: --test-case-key='concat(@classname,"#",@name,"=>",normalize-space())'
+              test-results-path: << parameters.test-results-path >>
+    jobs:
+      execute:
+        description: Calculate the difference of ESLint results between HEAD branch and BASE branch
+        executor: default
+        parameters:
+          analysis-prepare:
+            description: Specify the required steps before eslint if necessary
+            type: steps
+            default:
+              - run: npm install --global eslint
+          analysis-arguments:
+            description: Arguments of eslint command
+            type: string
+            default: --ext '.js,.jsx,.ts,.tsx' .
+          test-results-path:
+            description: Specify the value of the path parameter in the store_test_results step if you need to change it
+            type: string
+            default: "/tmp/test-results"
+        steps:
+          - execute:
+              analysis-prepare: << parameters.analysis-prepare >>
+              analysis-arguments: << parameters.analysis-arguments >>
+              test-results-path: << parameters.test-results-path >>
+
 executors:
   default:
     docker:
@@ -60,19 +118,6 @@ jobs:
     - store_test_results:
         path: ./reports
 
-  lint:
-    executor:
-      name: default
-
-    steps:
-    - checkout
-    - restore_node_modules
-
-    - run: npx gulp lint
-
-    - store_test_results:
-        path: ./reports
-
   publish:
     executor:
       name: default
@@ -103,7 +148,10 @@ workflows:
             only: /.*/
         requires:
         - setup
-    - lint:
+    - dscar-eslint/execute:
+        name: lint
+        analysis-prepare:
+          - restore_node_modules
         filters:
           tags:
             only: /.*/
