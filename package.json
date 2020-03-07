@@ -2,8 +2,14 @@
   "name": "junit-reports-combiner",
   "version": "0.0.3",
   "description": "Combine JUnit XML reports from two and more.",
-  "bin": "dist/index.js",
-  "man": "man/man1/junit-reports-combiner.1",
+  "bin": {
+    "junit-reports-combiner": "dist/cli/junit-reports-combiner/bin.js",
+    "checkstyle-reports-combiner": "dist/cli/checkstyle-reports-combiner/bin.js"
+  },
+  "man": [
+    "man/man1/junit-reports-combiner.1",
+    "man/man1/checkstyle-reports-combiner.1"
+  ],
   "main": "dist/main.js",
   "scripts": {
     "test": "gulp test",
@@ -15,6 +21,7 @@
   },
   "keywords": [
     "junit",
+    "checkstyle",
     "xml",
     "cli"
   ],

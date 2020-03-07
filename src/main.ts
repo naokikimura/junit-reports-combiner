@@ -1,15 +1,9 @@
 import { DOMImplementation } from 'xmldom';
-import { Operator, Union, Intersect, Except } from './operator';
+import { Operator, OperatorOptions, Union, Intersect, Except } from './operator';
 
 export type OperatorType = typeof Union | typeof Intersect | typeof Except;
-interface Options {
-  namespaces?: { [name: string]: string };
-  testSuiteKey?: string;
-  testCaseKey?: string;
-  testResultKey?: string;
-}
 
-export default class JUnitReportsCombiner {
+export abstract class DOMCombiner {
   static getOperatorType(operatorName: string): OperatorType {
     switch (operatorName) {
       case 'union': return Union;
@@ -19,17 +13,14 @@ export default class JUnitReportsCombiner {
     }
   }
 
-  private operator: Operator;
-  private namespaces: { [name: string]: string };
+  protected operator: Operator;
+  protected namespaces: { [name: string]: string };
+  protected rootNodeName: string;
 
-  constructor(operatorType: OperatorType = Union, distinct = true, options: Options = {}) {
-    const treeStructure: [string, string][] = [
-      ['.//testsuite', options.testSuiteKey || 'string(@name)'],
-      ['.//testcase', options.testCaseKey || 'concat(@classname,"#",@name)'],
-      ['.//failure|.//error', options.testResultKey || 'string(.)']
-    ];
+  protected constructor(rootNodeName: string, operatorType: OperatorType = Union, distinct = true, options: OperatorOptions = {}) {
     this.namespaces = options.namespaces || {};
-    this.operator = new operatorType(distinct, { namespaces: this.namespaces, treeStructure });
+    this.operator = new operatorType(distinct, options);
+    this.rootNodeName = rootNodeName;
   }
 
   combine(left: Document, right: Document): Document {
@@ -40,9 +31,57 @@ export default class JUnitReportsCombiner {
       for (const [key, value] of Object.entries(namespaces)) root.setAttribute(`xmlns:${key}`, value);
       document.appendChild(root);
       return document
-    })('testsuites', this.namespaces);
+    })(this.rootNodeName, this.namespaces);
     this.operator.operation(left, right, document.documentElement);
     return document;
+  }
+}
+
+interface JUnitReportCombinerOptions {
+  namespaces?: { [name: string]: string };
+  testSuiteKey?: string;
+  testCaseKey?: string;
+  testResultKey?: string;
+}
+
+export default class JUnitReportCombiner extends DOMCombiner {
+  constructor(operatorType: OperatorType = Union, distinct = true, options: JUnitReportCombinerOptions = {}) {
+    super(
+      'testsuites',
+      operatorType,
+      distinct,
+      {
+        namespaces: options.namespaces || {},
+        treeStructure: [
+          ['.//testsuite', options.testSuiteKey || 'string(@name)'],
+          ['.//testcase', options.testCaseKey || 'concat(@classname,"#",@name)'],
+          ['.//failure|.//error', options.testResultKey || 'string(.)']
+        ]
+      }
+    );
+  }
+}
+
+interface CheckstyleReportCombinerOptions {
+  namespaces?: { [name: string]: string };
+  fileKey?: string;
+  resultKey?: string;
+}
+
+export class CheckstyleReportCombiner extends DOMCombiner {
+  constructor(operatorType: OperatorType = Union, distinct = true, options: CheckstyleReportCombinerOptions = {}) {
+    super(
+      'checkstyle',
+      operatorType,
+      distinct,
+      {
+        namespaces: options.namespaces || {},
+        treeStructure: [
+          ['.//file', options.fileKey || 'string(@name)'],
+          ['.//error|.//exception', options.resultKey || 'concat(name(),"[source=",@source,"][line=",@line,"][column=",@column,"][message=",normalize-space(@message),"]")']
+        ]
+      }
+    );
   }
 }
 

@@ -1,10 +1,10 @@
-/// <reference types="../src/@types/xpath" />
+/// <reference types="../../src/@types/xpath" />
 
 import { expect } from 'chai';
 import { Readable, Writable } from 'stream';
 import { DOMParser } from 'xmldom';
 import xpath from 'xpath';
-import execute from '../src/cli';
+import execute from '../../src/cli/junit-reports-combiner';
 
 describe('CLI', () => {
   describe('execute', () => {

@@ -1,15 +1,14 @@
-.TH JUNIT-REPORTS-COMBINER 1 2020-02-14
+.TH CHECKSTYLE-REPORTS-COMBINER 1 2020-03-06
 
 .SH NAME
-junit-reports-combiner \- Combine JUnit XML reports from two and more
+checkstyle-reports-combiner \- Combine Checkstyle XML reports from two and more
 
 .SH SYNOPSIS
-.B junit-reports-combiner
+.B checkstyle-reports-combiner
 [\fB\-\-operator=\fR{\fBunion\fR|\fBintersect\fR|\fBexcept\fR}]
 [\fB\-\-all\fR]
-[\fB\-\-test-suite-key=\fItest-suite-key\fR]
-[\fB\-\-test-case-key=\fItest-case-key\fR]
-[\fB\-\-test-result-key=\fItest-result-key\fR]
+[\fB\-\-file-key=\file-key\fR]
+[\fB\-\-result-key=\result-key\fR]
 [\fB\-\-namespace=\fIname\fB=\fIuri\fR \fI...\fR]
 .I file
 [\fI...\fR]
@@ -42,25 +41,22 @@ Specify an operator. Default is \fBunion\fR.
 .B \-\-all
 Duplicate elements are eliminated unless \fB\-\-all\fR is used.
 .TP
-\fB\-\-test-suite-key=\fItest-suite-key\fR
-Specify an XPath expression that uniquely identifies the \fB<testsuite>\fR element. Default is \fBstring(@name)\fR.
+\fB\-\-file-key=\fIfile-key\fR
+Specify an XPath expression that uniquely identifies the \fB<file>\fR element. Default is \fBstring(@name)\fR.
 .TP
-\fB\-\-test-case-key=\fItest-case-key\fR
-Specify an XPath expression that uniquely identifies the \fB<testcase>\fR element. Default is \fBconcat(@classname,"#",@name)\fR.
-.TP
-\fB\-\-test-result-key=\fItest-result-key\fR
-Specify an XPath expression that uniquely identifies the \fB<failure>\fR element or \fB<error>\fR element. Default is \fBstring(.)\fR.
+\fB\-\-result-key=\fIresult-key\fR
+Specify an XPath expression that uniquely identifies the \fB<error>\fR element or \fB<exception>\fR element. Default is \fBstring(.)\fR.
 
 .SH EXAMPLES
 Combines two reports:
 .nf
 
-    junit-reports-combiner TEST-example.FooTest.xml TEST-example.BarTest.xml
+    checkstyle-reports-combiner TEST-example.FooTest.xml TEST-example.BarTest.xml
 
 .fi
 Shows the differences between the two reports:
 .nf
 
-    junit-reports-combiner --operator=except TEST-example.FooTest-1.xml TEST-example.FooTest-2.xml
+    checkstyle-reports-combiner --operator=except TEST-example.FooTest-1.xml TEST-example.FooTest-2.xml
 
 .fi
