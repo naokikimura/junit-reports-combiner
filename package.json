@@ -1,6 +1,6 @@
 {
   "name": "junit-reports-combiner",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Combine JUnit XML reports from two and more.",
   "bin": {
     "junit-reports-combiner": "dist/cli/junit-reports-combiner/bin.js",
